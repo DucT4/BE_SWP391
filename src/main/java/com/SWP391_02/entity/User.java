@@ -1,6 +1,5 @@
 package com.SWP391_02.entity;
 
-
 import com.SWP391_02.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +13,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;          // <- dùng 'id' để có getId()
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -26,5 +25,4 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
 }
