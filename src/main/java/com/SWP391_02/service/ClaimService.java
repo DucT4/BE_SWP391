@@ -46,7 +46,7 @@ public class ClaimService {
                 .vin(request.getVin())
                 .openedBy(userId)
                 .serviceCenterId(request.getServiceCenterId())
-                .status(ClaimStatus.OPEN)
+                .status(ClaimStatus.OPEN)  // Use enum directly
                 .failureDesc(request.getFailureDesc())
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -59,15 +59,14 @@ public class ClaimService {
                 savedClaim.getId(),
                 savedClaim.getVin(),
                 savedClaim.getOpenedBy(),
-                user.getUsername(), // assuming User has username field
+                user.getUsername(),
                 savedClaim.getServiceCenterId(),
                 serviceCenter.getName(),
-                savedClaim.getStatus(),
+                savedClaim.getStatus(),  // Return ClaimStatus enum
                 savedClaim.getFailureDesc(),
-                savedClaim.getApprovalLevel(),
+                savedClaim.getApprovalLevel(),  // Return ApprovalLevel enum
                 savedClaim.getCreatedAt(),
                 savedClaim.getUpdatedAt()
         );
     }
 }
-

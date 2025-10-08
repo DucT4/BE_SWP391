@@ -5,7 +5,6 @@ import com.SWP391_02.enums.ClaimStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "claims")
@@ -28,6 +27,7 @@ public class Claim {
     @Column(name = "service_center_id", nullable = false)
     private Long serviceCenterId;
 
+    // ✅ SỬA: Dùng enum ClaimStatus trực tiếp, lưu string vào DB
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private ClaimStatus status;
@@ -35,9 +35,16 @@ public class Claim {
     @Column(name = "failure_desc", columnDefinition = "TEXT")
     private String failureDesc;
 
+    // ✅ SỬA: Dùng enum ApprovalLevel trực tiếp, lưu string vào DB
     @Enumerated(EnumType.STRING)
     @Column(name = "approval_level")
     private ApprovalLevel approvalLevel;
+
+    @Column(name = "resolution_type_id")
+    private Long resolutionTypeId;
+
+    @Column(name = "resolution_note")
+    private String resolutionNote;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

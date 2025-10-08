@@ -17,6 +17,8 @@ public class RegisterRequest {
     @Email
     private String email;
 
+    private String phone;  // ✅ Thêm field phone
+
     private Role role;
     private String adminSecret;
 }
