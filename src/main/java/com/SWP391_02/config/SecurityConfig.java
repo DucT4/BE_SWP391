@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
                         // Endpoints public (đăng nhập/đăng ký/lấy token...)
-                        .requestMatchers("/api/auth/**", "/api/login", "/api/register").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/login").permitAll()
 
                         // 👉 Nếu muốn test không cần token cho nhóm technician:
                         // .requestMatchers("/api/tech/products/**").permitAll()
