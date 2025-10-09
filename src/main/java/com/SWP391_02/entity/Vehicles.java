@@ -1,26 +1,45 @@
 package com.SWP391_02.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Entity
-@Table(name="vehicles")
+@Table(name = "vehicles")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Vehicles {
+
     @Id
-    @Column(length = 17) // chuẩn VIN
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(length = 32)
     private String vin;
 
-    @Column(length = 100) private String model;
-    private Integer year;
-    @Column(length = 100) private String ownerName;
+    @Column(nullable = false, length = 80)
+    private String model;
+
+    @Column(name = "customer_id")
+    private Long customerId;
+
+    @Column(name = "purchase_date")
+    private LocalDate purchaseDate;
+
+    @Column(name = "coverage_to")
+    private LocalDate coverageTo;
+
+    // Relationships
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
+    private Customer customer;
+
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Claim> claims;
+
+
 }

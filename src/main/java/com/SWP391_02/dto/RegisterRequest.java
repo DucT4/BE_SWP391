@@ -17,6 +17,8 @@ public class RegisterRequest {
     @Email
     private String email;
 
-    private Role role; // optional (nếu null -> mặc định CUSTOMER)
+    private String phone;  // ✅ Thêm field phone
+
+    private Role role;
     private String adminSecret;
 }
