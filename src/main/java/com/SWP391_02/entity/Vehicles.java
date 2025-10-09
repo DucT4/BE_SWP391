@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vehicle {
+public class Vehicles {
     @Id
     @Column(length = 17) // chuẩn VIN
     private String vin;

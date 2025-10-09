@@ -1,6 +1,6 @@
 package com.SWP391_02.controller;
 import com.SWP391_02.dto.CreateVehicleRequest;
-import com.SWP391_02.entity.Vehicle;
+import com.SWP391_02.entity.Vehicles;
 import com.SWP391_02.repository.VehicleRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,7 +26,7 @@ public class VehicleController {
         if (vehicleRepo.existsById(req.vin())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("VIN already exists");
         }
-        Vehicle v = Vehicle.builder()
+        Vehicles v = Vehicles.builder()
                 .vin(req.vin())
                 .model(req.model())
                 .year(req.year())
