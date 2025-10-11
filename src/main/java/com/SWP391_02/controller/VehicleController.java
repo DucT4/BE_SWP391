@@ -29,8 +29,6 @@ public class VehicleController {
         Vehicles v = Vehicles.builder()
                 .vin(req.vin())
                 .model(req.model())
-                .year(req.year())
-                .ownerName(req.ownerName())
                 .build();
         vehicleRepo.save(v);
         return ResponseEntity.created(URI.create("/api/vehicles/" + v.getVin())).build();
