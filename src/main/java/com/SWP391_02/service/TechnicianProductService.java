@@ -5,7 +5,7 @@ import com.SWP391_02.dto.AddPartRequest;
 import com.SWP391_02.dto.PartResponse;
 import com.SWP391_02.dto.PartUpdateRequest;
 import com.SWP391_02.entity.Part;
-import com.SWP391_02.repository.PartRepo;
+import com.SWP391_02.repository.PartRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TechnicianProductService {
 
-    private final PartRepo partRepo;
+    private final PartRepository partRepo;
 
     // GET all product (có tìm kiếm + phân trang + sắp xếp)
     @Transactional(readOnly = true)

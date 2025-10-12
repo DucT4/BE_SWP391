@@ -1,26 +1,30 @@
 package com.SWP391_02.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDate;
 
 @Entity
-@Table(name="vehicles")
+@Table(name = "vehicles")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Vehicles {
+
     @Id
-    @Column(length = 17) // chuẩn VIN
+    @Column(length = 32)        // PK là String -> KHÔNG @GeneratedValue
     private String vin;
 
-    @Column(length = 100) private String model;
-    private Integer year;
-    @Column(length = 100) private String ownerName;
+    @Column(nullable = false, length = 80)
+    private String model;
+
+    @Column(name = "customer_id")
+    private Long customerId;
+
+    @Column(name = "purchase_date")
+    private LocalDate purchaseDate;
+
+    @Column(name = "coverage_to")
+    private LocalDate coverageTo;
 }

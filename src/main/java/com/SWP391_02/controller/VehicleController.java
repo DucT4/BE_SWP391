@@ -1,12 +1,11 @@
 package com.SWP391_02.controller;
+
 import com.SWP391_02.dto.CreateVehicleRequest;
 import com.SWP391_02.entity.Vehicles;
-import com.SWP391_02.repository.VehicleRepository;
+import com.SWP391_02.service.VehicleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,45 +17,25 @@ import java.net.URI;
 @SecurityRequirement(name = "bearerAuth")
 public class VehicleController {
 
-    private final VehicleRepository vehicleRepo;
+    private final VehicleService service;
 
-    @Operation(summary = "Tạo Vehicle")
+    @Operation(summary = "Tạo Vehicle mới")
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody CreateVehicleRequest req) {
-        if (vehicleRepo.existsById(req.vin())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("VIN already exists");
-        }
-        Vehicles v = Vehicles.builder()
-                .vin(req.vin())
-                .model(req.model())
-                .year(req.year())
-                .ownerName(req.ownerName())
-                .build();
-        vehicleRepo.save(v);
-        return ResponseEntity.created(URI.create("/api/vehicles/" + v.getVin())).build();
+    public ResponseEntity<?> create(@RequestBody CreateVehicleRequest req) {
+        Vehicles v = service.create(req);
+        return ResponseEntity.created(URI.create("/api/vehicles/" + v.getVin())).body(v);
     }
 
     @Operation(summary = "Lấy chi tiết Vehicle theo VIN")
     @GetMapping("/{vin}")
-    public ResponseEntity<?> get(@PathVariable String vin) {
-        return vehicleRepo.findById(vin)
-                .<ResponseEntity<?>>map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found"));
+    public ResponseEntity<Vehicles> get(@PathVariable String vin) {
+        return ResponseEntity.ok(service.getByVin(vin));
     }
 
     @Operation(summary = "Xóa Vehicle")
     @DeleteMapping("/{vin}")
-    public ResponseEntity<?> delete(@PathVariable String vin) {
-        if (!vehicleRepo.existsById(vin)) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            vehicleRepo.deleteById(vin);
-            return ResponseEntity.noContent().build();
-        } catch (DataIntegrityViolationException ex) {
-            // Trường hợp có coverage/claim/event đang tham chiếu VIN này
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Không thể xóa: VIN đang được tham chiếu bởi dữ liệu khác (coverage/claim/event).");
-        }
+    public ResponseEntity<Void> delete(@PathVariable String vin) {
+        service.delete(vin);
+        return ResponseEntity.noContent().build();
     }
 }
