@@ -1,14 +1,8 @@
 package com.SWP391_02.entity;
 
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "vehicles")
@@ -19,8 +13,7 @@ import java.util.List;
 public class Vehicles {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(length = 32)
+    @Column(length = 32)        // PK là String -> KHÔNG @GeneratedValue
     private String vin;
 
     @Column(nullable = false, length = 80)
@@ -34,14 +27,4 @@ public class Vehicles {
 
     @Column(name = "coverage_to")
     private LocalDate coverageTo;
-
-    // Relationships
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
-    private Customer customer;
-
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Claim> claims;
-
-
 }
