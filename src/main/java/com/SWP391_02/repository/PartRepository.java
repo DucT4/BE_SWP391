@@ -6,7 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PartRepo extends JpaRepository<Part, Long> {
+import java.util.Optional;
+
+public interface PartRepository extends JpaRepository<Part, Long> {
     Page<Part> findByPartNoContainingIgnoreCaseOrNameContainingIgnoreCase(String q1, String q2, Pageable pageable);
     boolean existsByPartNo(String partNo);
+    Optional<Part> findByPartNo(String partNo);
+
 }
