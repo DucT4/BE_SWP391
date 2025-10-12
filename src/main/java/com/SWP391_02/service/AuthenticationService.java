@@ -55,6 +55,7 @@ public class AuthenticationService implements UserDetailsService {
                 .username(req.getUsername())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .email(req.getEmail())
+                .phone(req.getPhone())
                 .role(requestedRole)
                 .build();
 

@@ -6,6 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class TokenService {
 
         return Jwts.builder()
                 .setSubject(user.getUsername())
+                .claim("userId", user.getId()) // Add userId to token
                 .claim("role", "ROLE_" + user.getRole().name())
                 .setIssuedAt(now)
                 .setExpiration(exp)
@@ -43,6 +45,14 @@ public class TokenService {
         return extractAll(token).getSubject();
     }
 
+    public Long extractUserId(String token) {
+        return extractAll(token).get("userId", Long.class);
+    }
+
+    public String extractRole(String token) {
+        return extractAll(token).get("role", String.class);
+    }
+
     public boolean isExpired(String token) {
         return extractAll(token).getExpiration().before(new Date());
     }
@@ -53,6 +63,31 @@ public class TokenService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    // ====== New methods for HTTP request ======
+    public String extractTokenFromRequest(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
+    }
+
+    public Long getUserIdFromRequest(HttpServletRequest request) {
+        String token = extractTokenFromRequest(request);
+        if (token != null) {
+            return extractUserId(token);
+        }
+        return null;
+    }
+
+    public String getRoleFromRequest(HttpServletRequest request) {
+        String token = extractTokenFromRequest(request);
+        if (token != null) {
+            return extractRole(token);
+        }
+        return null;
     }
 
     // ====== Validate ======

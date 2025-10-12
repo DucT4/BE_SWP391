@@ -1,6 +1,5 @@
 package com.SWP391_02.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +25,3 @@ public class Part {
     @Column(length=20)
     private String uom;
 }
-
