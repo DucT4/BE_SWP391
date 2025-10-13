@@ -61,8 +61,9 @@ public class SecurityConfig {
                         // Endpoints public (đăng nhập/đăng ký/lấy token...)
                         .requestMatchers("/api/auth/**", "/api/login").permitAll()
 
-                        // 👉 Nếu muốn test không cần token cho nhóm technician:
-                        // .requestMatchers("/api/tech/products/**").permitAll()
+
+                        // Technician API (bắt buộc có token hợp lệ)
+                        .requestMatchers("/api/tech/products/**").authenticated()
 
                         // Mặc định: các API khác bắt buộc có token
                         .anyRequest().authenticated()
