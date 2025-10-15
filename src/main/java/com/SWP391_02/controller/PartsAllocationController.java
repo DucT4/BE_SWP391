@@ -6,7 +6,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -18,6 +20,7 @@ public class PartsAllocationController {
     private final PartsAllocationService service;
 
     @Operation(summary = "Phân bổ phụ tùng", description = "EVM Staff cấp phát phụ tùng từ kho đến Service Center.")
+    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF')")
     @PostMapping
     public ResponseEntity<PartsAllocation> allocateParts(
             @RequestParam Long requestId,
@@ -27,12 +30,14 @@ public class PartsAllocationController {
     }
 
     @Operation(summary = "Lấy danh sách phân bổ", description = "Hiển thị toàn bộ các phân bổ phụ tùng hiện tại.")
+    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF', 'SC_MANAGER')")
     @GetMapping
     public ResponseEntity<List<PartsAllocation>> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
     @Operation(summary = "Cập nhật trạng thái phân bổ", description = "Thay đổi trạng thái phân bổ (ALLOCATED / SHIPPED / COMPLETED).")
+    @PreAuthorize("hasAnyAuthority('EVM_STAFF', 'SC_MANAGER')")
     @PutMapping("/{id}/status")
     public ResponseEntity<PartsAllocation> updateStatus(@PathVariable Long id, @RequestParam String status) {
         return ResponseEntity.ok(service.updateStatus(id, status));
