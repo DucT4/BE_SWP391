@@ -21,21 +21,21 @@ public class WarrantyCoverageController {
     private final WarrantyCoverageService service;
 
     @Operation(summary = "Tạo coverage (POST)")
-    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF')")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CreateCoverageRequest req) {
         return service.create(req);
     }
 
     @Operation(summary = "Lấy coverage theo id (GET)")
-    @PreAuthorize("hasAnyAuthority('SC_TECHNICIAN', 'SC_MANAGER', 'EVM_STAFF', 'EVM_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_SC_MANAGER', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
         return service.getOne(id);
     }
 
     @Operation(summary = "Liệt kê coverage theo VIN (GET, phân trang)")
-    @PreAuthorize("hasAnyAuthority('SC_TECHNICIAN', 'SC_MANAGER', 'EVM_STAFF', 'EVM_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_SC_MANAGER', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @GetMapping
     public Page<WarrantyCoverage> listByVin(@RequestParam String vin,
                                             @RequestParam(defaultValue = "0") int page,
@@ -44,7 +44,7 @@ public class WarrantyCoverageController {
     }
 
     @Operation(summary = "Xóa coverage (DELETE)")
-    @PreAuthorize("hasAuthority('EVM_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return service.delete(id);

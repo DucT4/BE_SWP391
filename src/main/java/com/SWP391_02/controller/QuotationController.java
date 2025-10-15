@@ -17,21 +17,21 @@ public class QuotationController {
     private final QuotationService service;
 
     @Operation(summary = "Lấy danh sách tất cả báo giá (GET)")
-    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF', 'SC_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF', 'ROLE_SC_MANAGER')")
     @GetMapping
     public ResponseEntity<?> getAll() {
         return service.getAll();
     }
 
     @Operation(summary = "Lấy chi tiết 1 báo giá (GET /{id})")
-    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF', 'SC_MANAGER', 'SC_TECHNICIAN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF', 'ROLE_SC_MANAGER', 'ROLE_SC_TECHNICIAN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
         return service.getOne(id);
     }
 
     @Operation(summary = "Cập nhật trạng thái báo giá (PUT /{id})")
-    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateStatus(@PathVariable Long id,
                                           @RequestParam String status,
@@ -40,7 +40,7 @@ public class QuotationController {
     }
 
     @Operation(summary = "Xóa báo giá (DELETE /{id})")
-    @PreAuthorize("hasAuthority('EVM_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return service.delete(id);

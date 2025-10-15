@@ -28,7 +28,7 @@ public class TechnicianProductController {
             description = "Truy vấn danh sách phụ tùng có phân trang, tìm kiếm, sắp xếp.<br>"
 
     )
-    @PreAuthorize("hasAnyAuthority('SC_TECHNICIAN', 'SC_MANAGER', 'EVM_STAFF', 'EVM_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_SC_MANAGER', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @GetMapping
     public ResponseEntity<Page<PartResponse>> getAll(
             @RequestParam(required = false) String q,
@@ -46,7 +46,7 @@ public class TechnicianProductController {
             description = "Chỉnh sửa thông tin phụ tùng hiện có.<br>"
 
     )
-    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<PartResponse> update(
             @PathVariable Long id,
@@ -59,7 +59,7 @@ public class TechnicianProductController {
             description = "Xóa phụ tùng khỏi hệ thống.<br>"
 
     )
-    @PreAuthorize("hasAuthority('EVM_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
@@ -70,7 +70,7 @@ public class TechnicianProductController {
             summary = "Thêm mới sản phẩm (POST)",
             description = "Tạo mới phụ tùng vào hệ thống.<br>"
     )
-    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF')")
     @PostMapping
     public ResponseEntity<?> addPart(@Valid @RequestBody AddPartRequest request) {
         try {

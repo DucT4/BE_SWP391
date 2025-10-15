@@ -25,7 +25,7 @@ public class CampaignController {
     private final CampaignService campaignService;
 
     @Operation(summary = "Admin tạo campaign mới (EVM_ADMIN)")
-    @PreAuthorize("hasAuthority('EVM_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @PostMapping
     public ResponseEntity<?> createCampaign(@Valid @RequestBody CreateCampaignRequest req,
                                             @RequestHeader("X-User-Id") Long userId) {
@@ -33,7 +33,7 @@ public class CampaignController {
     }
 
     @Operation(summary = "Admin thêm VIN vào campaign (EVM_ADMIN, EVM_STAFF)")
-    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF')")
     @PostMapping("/{campaignId}/vins")
     public ResponseEntity<?> addVins(@PathVariable Long campaignId,
                                      @Valid @RequestBody AddVinRequest req) {
@@ -41,14 +41,14 @@ public class CampaignController {
     }
 
     @Operation(summary = "Xem danh sách VIN trong campaign (EVM + SC)")
-    @PreAuthorize("hasAnyAuthority('EVM_ADMIN', 'EVM_STAFF', 'SC_MANAGER', 'SC_TECHNICIAN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF', 'ROLE_SC_MANAGER', 'ROLE_SC_TECHNICIAN')")
     @GetMapping("/{campaignId}/vins")
     public List<CampaignVin> listVins(@PathVariable Long campaignId) {
         return campaignService.listVins(campaignId);
     }
 
     @Operation(summary = "Cập nhật campaign (EVM_ADMIN)")
-    @PreAuthorize("hasAuthority('EVM_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCampaign(@PathVariable Long id,
                                             @Valid @RequestBody CreateCampaignRequest req) {
@@ -56,13 +56,13 @@ public class CampaignController {
     }
 
     @Operation(summary = "Xóa campaign (EVM_ADMIN)")
-    @PreAuthorize("hasAuthority('EVM_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCampaign(@PathVariable Long id) {
         return campaignService.deleteCampaign(id);
     }
     @Operation(summary = "SC_STAFF xác nhận nhận chiến dịch")
-    @PreAuthorize("hasAuthority('SC_STAFF')")
+    @PreAuthorize("hasAuthority('ROLE_SC_STAFF')")
     @PostMapping("/{campaignId}/receive")
     public ResponseEntity<?> receiveCampaign(@PathVariable Long campaignId,
                                              @RequestHeader("X-User-Id") Long userId) {
@@ -70,7 +70,7 @@ public class CampaignController {
     }
 
     @Operation(summary = "SC_STAFF tạo đơn chiến dịch")
-    @PreAuthorize("hasAuthority('SC_STAFF')")
+    @PreAuthorize("hasAuthority('ROLE_SC_STAFF')")
     @PostMapping("/{campaignId}/records")
     public ResponseEntity<?> createCampaignRecord(@PathVariable Long campaignId,
                                                   @Valid @RequestBody CampaignRecordRequest req,
