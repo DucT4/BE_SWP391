@@ -30,6 +30,7 @@ public class ClaimService {
     private final UserRepository userRepository;
     private final ClaimApprovalService approvalService;
     private final ClaimStatusHistoryService historyService;
+    private final ClaimAssignmentService assignmentService;
 
     @Transactional
     public ClaimResponse createClaim(ClaimRequest request, Long userId) {
@@ -117,5 +118,10 @@ public class ClaimService {
 
         approvalService.record(claim, evmUser, "EVM", dto.getDecision(), dto.getRemark());
         historyService.log(claim, newStatus.name(), evmUser, "EVM quyết định: " + dto.getDecision());
+    }
+
+    public Claim getClaimById(Long claimId) {
+        return claimRepo.findById(claimId)
+                .orElseThrow(() -> new EntityNotFoundException("Claim với ID " + claimId + " không tồn tại"));
     }
 }
