@@ -35,7 +35,7 @@ public class ClaimController {
      * SC_TECHNICIAN tạo claim mới
      */
     @Operation(summary = "Tạo claim mới (SC_TECHNICIAN)")
-    @PreAuthorize("hasAuthority('SC_TECHNICIAN')")
+    @PreAuthorize("hasAuthority('ROLE_SC_TECHNICIAN')")
     @PostMapping
     public ResponseEntity<?> createClaim(@Valid @RequestBody ClaimRequest request,
                                          HttpServletRequest httpRequest) {
@@ -66,7 +66,7 @@ public class ClaimController {
      * SC_MANAGER gửi claim lên hãng
      */
     @Operation(summary = "Gửi claim lên hãng (SC_MANAGER)")
-    @PreAuthorize("hasAuthority('SC_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_SC_MANAGER')")
     @PutMapping("/{id}/submit")
     public ResponseEntity<?> submitClaim(@PathVariable Long id,
                                          @RequestParam(required = false) String remark,
@@ -104,7 +104,7 @@ public class ClaimController {
      * EVM_STAFF hoặc EVM_ADMIN duyệt claim
      */
     @Operation(summary = "Duyệt claim (EVM_STAFF hoặc EVM_ADMIN)")
-    @PreAuthorize("hasAnyAuthority('EVM_STAFF', 'EVM_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @PutMapping("/approve")
     public ResponseEntity<?> approveClaim(@Valid @RequestBody ClaimApprovalDTO dto,
                                           HttpServletRequest httpRequest) {

@@ -17,7 +17,7 @@ public class WarrantyRepairController {
     private final WarrantyRepairService service;
 
     @Operation(summary = "Technician thực hiện bảo hành (POST)")
-    @PreAuthorize("hasAuthority('SC_TECHNICIAN')")
+    @PreAuthorize("hasAuthority('ROLE_SC_TECHNICIAN')")
     @PostMapping
     public ResponseEntity<?> performRepair(@RequestParam Long claimId,
                                            @RequestParam Long technicianId,
@@ -29,14 +29,14 @@ public class WarrantyRepairController {
     }
 
     @Operation(summary = "Lấy chi tiết ca sửa (GET)")
-    @PreAuthorize("hasAnyAuthority('SC_MANAGER', 'EVM_STAFF', 'EVM_ADMIN', 'SC_TECHNICIAN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_MANAGER', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN', 'ROLE_SC_TECHNICIAN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
         return service.getOne(id);
     }
 
     @Operation(summary = "Xóa ca sửa (DELETE)")
-    @PreAuthorize("hasAuthority('EVM_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return service.delete(id);

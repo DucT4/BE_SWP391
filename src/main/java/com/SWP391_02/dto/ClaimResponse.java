@@ -22,6 +22,8 @@ public class ClaimResponse {
     private ClaimStatus status;
     private String failureDesc;
     private ApprovalLevel approvalLevel;
+    private String resolutionType;
+    private String resolutionNote;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

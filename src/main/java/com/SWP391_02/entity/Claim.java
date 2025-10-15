@@ -37,10 +37,10 @@ public class Claim {
     @Column(name = "approval_level")
     private ApprovalLevel approvalLevel;
 
-    @Column(name = "resolution_type_id")
-    private Long resolutionTypeId;
+    @Column(name = "resolution_type", length = 30)
+    private String resolutionType;
 
-    @Column(name = "resolution_note")
+    @Column(name = "resolution_note", length = 300)
     private String resolutionNote;
 
     @Column(name = "created_at", nullable = false)
