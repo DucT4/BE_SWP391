@@ -22,7 +22,7 @@ public class WarrantyController {
     private final WarrantyService warrantyService;
 
     @Operation(summary = "Tra cứu bảo hành theo VIN (asOf=yyyy-MM-dd, mặc định hôm nay)")
-    @PreAuthorize("hasAnyAuthority('SC_TECHNICIAN', 'SC_MANAGER', 'EVM_STAFF', 'EVM_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_SC_MANAGER', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @GetMapping("/lookup")
     public WarrantyLookupResponse lookup(
             @RequestParam String vin,
