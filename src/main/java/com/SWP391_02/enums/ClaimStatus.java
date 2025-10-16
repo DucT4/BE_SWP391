@@ -7,5 +7,7 @@ public enum ClaimStatus {
     REJECTED,           // Bị từ chối
     ASSIGNED,           // Đã phân công kỹ thuật viên
     DONE,               // Hoàn thành sửa chữa
-    CLOSED              // Đã quyết toán & đóng
+    CLOSED,// Đã quyết toán & đóng
+    INSPECTED,          // ✅ Đã kiểm tra (SC_TECH kiểm tra xong)
+    CONFIRMED_REPAIR,   // ✅ SC_TECH xác nhận hạng mục & chi phí
 }
