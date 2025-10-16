@@ -22,13 +22,13 @@ public class ClaimStatusHistory {
     private Claim claim;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "changed_by", nullable = false)
+    @JoinColumn(name = "changed_by")
     private User changedBy;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 40)
     private String status;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 200)
     private String note;
 
     @Column(name = "changed_at", nullable = false)

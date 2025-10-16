@@ -5,7 +5,6 @@ import com.SWP391_02.enums.ClaimStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "claims")
 @Data
@@ -18,7 +17,7 @@ public class Claim {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 32) // ✅ đồng bộ với Vehicles.vin
     private String vin;
 
     @Column(name = "opened_by", nullable = false)
@@ -27,7 +26,6 @@ public class Claim {
     @Column(name = "service_center_id", nullable = false)
     private Long serviceCenterId;
 
-    // ✅ SỬA: Dùng enum ClaimStatus trực tiếp, lưu string vào DB
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private ClaimStatus status;
@@ -35,15 +33,14 @@ public class Claim {
     @Column(name = "failure_desc", columnDefinition = "TEXT")
     private String failureDesc;
 
-    // ✅ SỬA: Dùng enum ApprovalLevel trực tiếp, lưu string vào DB
     @Enumerated(EnumType.STRING)
     @Column(name = "approval_level")
     private ApprovalLevel approvalLevel;
 
-    @Column(name = "resolution_type_id")
-    private Long resolutionTypeId;
+    @Column(name = "resolution_type", length = 30)
+    private String resolutionType;
 
-    @Column(name = "resolution_note")
+    @Column(name = "resolution_note", length = 300)
     private String resolutionNote;
 
     @Column(name = "created_at", nullable = false)
@@ -52,7 +49,7 @@ public class Claim {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Relationships
+    // ✅ Quan hệ ManyToOne
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vin", insertable = false, updatable = false)
     private Vehicles vehicle;
@@ -64,7 +61,6 @@ public class Claim {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_center_id", insertable = false, updatable = false)
     private ServiceCenters serviceCenter;
-
 
     @PrePersist
     protected void onCreate() {

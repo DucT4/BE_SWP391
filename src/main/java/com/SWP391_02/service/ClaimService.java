@@ -72,6 +72,8 @@ public class ClaimService {
                 savedClaim.getStatus(),
                 savedClaim.getFailureDesc(),
                 savedClaim.getApprovalLevel(),
+                savedClaim.getResolutionType(),
+                savedClaim.getResolutionNote(),
                 savedClaim.getCreatedAt(),
                 savedClaim.getUpdatedAt()
         );

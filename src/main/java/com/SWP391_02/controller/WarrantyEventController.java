@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,18 +21,21 @@ public class WarrantyEventController {
     private final WarrantyEventService service;
 
     @Operation(summary = "Tạo event lịch sử (POST)")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CreateEventRequest req) {
         return service.create(req);
     }
 
     @Operation(summary = "Lấy chi tiết 1 event (GET /{id})")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_SC_MANAGER', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
         return service.getOne(id);
     }
 
     @Operation(summary = "Danh sách event theo VIN (GET, phân trang)")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_SC_MANAGER', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @GetMapping
     public Page<HistoryEventDTO> list(@RequestParam String vin,
                                       @RequestParam(defaultValue = "0") int page,
@@ -40,6 +44,7 @@ public class WarrantyEventController {
     }
 
     @Operation(summary = "Cập nhật event (PUT)")
+    @PreAuthorize("hasAnyAuthority('ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @Valid @RequestBody CreateEventRequest req) {
@@ -47,6 +52,7 @@ public class WarrantyEventController {
     }
 
     @Operation(summary = "Xóa event (DELETE)")
+    @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return service.delete(id);
