@@ -34,7 +34,7 @@ public class PartsRequest {
     // ✅ Load luôn dữ liệu khi query để tránh lazy proxy bug
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_center_id", nullable = false)
-    private ServiceCenter serviceCenter;
+    private ServiceCenters serviceCenter;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "part_id", nullable = false)

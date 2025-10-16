@@ -26,7 +26,7 @@ public class Shipment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_service_center_id")
-    private ServiceCenter toServiceCenter;
+    private ServiceCenters toServiceCenter;
 
     @Column(length = 50)
     private String status; // CREATED / SHIPPED / DELIVERED

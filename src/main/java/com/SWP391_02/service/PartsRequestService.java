@@ -2,7 +2,7 @@ package com.SWP391_02.service;
 
 import com.SWP391_02.entity.PartsRequest;
 import com.SWP391_02.entity.Part;
-import com.SWP391_02.entity.ServiceCenter;
+import com.SWP391_02.entity.ServiceCenters;
 import com.SWP391_02.repository.PartsRequestRepository;
 import com.SWP391_02.repository.PartRepository;
 import com.SWP391_02.repository.ServiceCenterRepository;
@@ -24,7 +24,7 @@ public class PartsRequestService {
     public PartsRequest createRequest(Long serviceCenterId, Long partId, Integer qty, String note) {
         Part part = partRepo.findById(partId)
                 .orElseThrow(() -> new RuntimeException("Part not found"));
-        ServiceCenter sc = scRepo.findById(serviceCenterId)
+        ServiceCenters sc = scRepo.findById(serviceCenterId)
                 .orElseThrow(() -> new RuntimeException("Service Center not found"));
 
         PartsRequest req = PartsRequest.builder()

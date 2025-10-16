@@ -21,7 +21,7 @@ public class PartsAllocationService {
                 .orElseThrow(() -> new RuntimeException("Request not found"));
         Warehouse wh = warehouseRepo.findById(warehouseId)
                 .orElseThrow(() -> new RuntimeException("Warehouse not found"));
-        ServiceCenter sc = scRepo.findById(scId)
+        ServiceCenters sc = scRepo.findById(scId)
                 .orElseThrow(() -> new RuntimeException("Service Center not found"));
 
         PartsAllocation allocation = PartsAllocation.builder()

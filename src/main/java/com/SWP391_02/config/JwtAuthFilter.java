@@ -1,7 +1,7 @@
 package com.SWP391_02.config;
 
 import com.SWP391_02.service.AuthenticationService;
-import com.SWP391_02.service.TokenService; // <-- đúng
+import com.SWP391_02.service.TokenService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,22 +35,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-        String p = request.getServletPath();
+        String path = request.getServletPath();
         return "OPTIONS".equalsIgnoreCase(request.getMethod())
-                || p.startsWith("/api/auth/")
-                || p.startsWith("/v3/api-docs")
-                || p.startsWith("/swagger-ui");
+                || path.startsWith("/api/auth/")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs");
     }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain chain)
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         try {
             String authHeader = request.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                chain.doFilter(request, response);
+                filterChain.doFilter(request, response);
                 return;
             }
 
@@ -61,15 +61,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UserDetails user = userDetailsService.loadUserByUsername(username);
                 if (tokenService.isTokenValid(jwt, user)) {
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(
+                                    user, null, user.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
 
-            chain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+
         } catch (Exception ex) {
             exceptionResolver.resolveException(request, response, null, ex);
+            return; // 🔥 BẮT BUỘC có dòng này, nếu không JSON bị mất
         }
     }
 }
