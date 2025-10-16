@@ -6,7 +6,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -18,6 +20,7 @@ public class PartsRequestController {
     private final PartsRequestService service;
 
     @Operation(summary = "Tạo yêu cầu phụ tùng", description = "Service Center gửi yêu cầu phụ tùng tới EVM Staff để xét duyệt.")
+    @PreAuthorize("hasAnyAuthority('SC_MANAGER', 'SC_TECHNICIAN')")
     @PostMapping
     public ResponseEntity<PartsRequest> createRequest(
             @RequestParam Long serviceCenterId,
@@ -27,7 +30,7 @@ public class PartsRequestController {
         return ResponseEntity.ok(service.createRequest(serviceCenterId, partId, quantity, note));
     }
 
-    @Operation(summary = "Lấy danh sách yêu cầu", description = "Lấy toàn bộ yêu cầu phụ tùng (có thể lọc theo trạng thái).")
+    @Operation(summary = "Lấy danh sách yêu cầu", description = "Lấy toàn bộ yêu cầu phụ tùng (chỉ EVM xem được).")
     @GetMapping
     public ResponseEntity<List<PartsRequest>> getAllRequests() {
         return ResponseEntity.ok(service.getAllRequests());

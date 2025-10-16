@@ -5,9 +5,13 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "parts_allocations")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class PartsAllocation {
 
     @Id
@@ -30,11 +34,11 @@ public class PartsAllocation {
     private ServiceCenter toServiceCenter;
 
     @Column(length = 50)
-    private String status; // ALLOCATED / SHIPPED / COMPLETED
+    private String status;
 
     @Column(name = "eta_date")
-    private LocalDate etaDate; // ngày dự kiến giao hàng
+    private LocalDate etaDate;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 }

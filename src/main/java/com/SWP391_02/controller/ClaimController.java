@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,37 +37,23 @@ public class ClaimController {
     @Operation(summary = "Tạo claim mới (SC_TECHNICIAN)")
     @PostMapping
     public ResponseEntity<?> createClaim(@Valid @RequestBody ClaimRequest request,
-                                        HttpServletRequest httpRequest) {
+                                         HttpServletRequest httpRequest) {
         try {
             log.info("Nhận request tạo claim: vin={}, serviceCenterId={}", request.getVin(), request.getServiceCenterId());
 
-            // Extract user ID from JWT token
             Long userId = tokenService.getUserIdFromRequest(httpRequest);
-
             if (userId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new MessageResponse("Token không hợp lệ hoặc không tồn tại"));
             }
 
-            // Extract role from JWT token
-            String userRole = tokenService.getRoleFromRequest(httpRequest);
-
-            // Kiểm tra quyền SC_TECHNICIAN
-            if (userRole == null || !userRole.equals("ROLE_SC_TECHNICIAN")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new MessageResponse("Chỉ có SC Technician mới có quyền tạo claim"));
-            }
-
-            // Create claim
             ClaimResponse response = claimService.createClaim(request, userId);
             log.info("Tạo claim thành công: id={}", response.getId());
-
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (EntityNotFoundException e) {
             log.error("Lỗi EntityNotFound: {}", e.getMessage());
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Lỗi: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(new MessageResponse("Lỗi: " + e.getMessage()));
         } catch (Exception e) {
             log.error("Lỗi hệ thống khi tạo claim", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -80,24 +67,15 @@ public class ClaimController {
     @Operation(summary = "Gửi claim lên hãng (SC_MANAGER)")
     @PutMapping("/{id}/submit")
     public ResponseEntity<?> submitClaim(@PathVariable Long id,
-                                        @RequestParam(required = false) String remark,
-                                        HttpServletRequest httpRequest) {
+                                         @RequestParam(required = false) String remark,
+                                         HttpServletRequest httpRequest) {
         try {
             log.info("Nhận request submit claim: claimId={}, remark={}", id, remark);
 
             Long userId = tokenService.getUserIdFromRequest(httpRequest);
-
             if (userId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new MessageResponse("Token không hợp lệ"));
-            }
-
-            String userRole = tokenService.getRoleFromRequest(httpRequest);
-            log.info("User role: {}", userRole);
-
-            if (!"ROLE_SC_MANAGER".equals(userRole)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new MessageResponse("Chỉ có SC Manager mới có quyền gửi claim lên hãng"));
             }
 
             User manager = userRepository.findById(userId)
@@ -105,17 +83,14 @@ public class ClaimController {
 
             claimService.submitToEvm(id, manager, remark != null ? remark : "");
             log.info("Submit claim thành công: claimId={}", id);
-
             return ResponseEntity.ok(new MessageResponse("Đã gửi claim lên hãng!"));
 
         } catch (EntityNotFoundException e) {
             log.error("Lỗi EntityNotFound: {}", e.getMessage());
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Lỗi: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(new MessageResponse("Lỗi: " + e.getMessage()));
         } catch (IllegalStateException e) {
             log.error("Lỗi trạng thái: {}", e.getMessage());
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Lỗi: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(new MessageResponse("Lỗi: " + e.getMessage()));
         } catch (Exception e) {
             log.error("Lỗi hệ thống khi submit claim", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -124,27 +99,20 @@ public class ClaimController {
     }
 
     /**
-     * EVM_STAFF duyệt chính thức
+     * EVM_STAFF hoặc EVM_ADMIN duyệt claim
      */
-    @Operation(summary = "Duyệt claim (EVM_STAFF)")
+    @Operation(summary = "Duyệt claim (EVM_STAFF hoặc EVM_ADMIN)")
+    @PreAuthorize("hasAnyAuthority('EVM_STAFF', 'EVM_ADMIN')")
     @PutMapping("/approve")
     public ResponseEntity<?> approveClaim(@Valid @RequestBody ClaimApprovalDTO dto,
-                                         HttpServletRequest httpRequest) {
+                                          HttpServletRequest httpRequest) {
         try {
             log.info("Nhận request approve claim: claimId={}, decision={}", dto.getClaimId(), dto.getDecision());
 
             Long userId = tokenService.getUserIdFromRequest(httpRequest);
-
             if (userId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new MessageResponse("Token không hợp lệ"));
-            }
-
-            String userRole = tokenService.getRoleFromRequest(httpRequest);
-
-            if (!"ROLE_EVM_STAFF".equals(userRole)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new MessageResponse("Chỉ có EVM Staff mới có quyền duyệt claim"));
             }
 
             User evmUser = userRepository.findById(userId)
@@ -152,17 +120,14 @@ public class ClaimController {
 
             claimService.approveByEvm(dto, evmUser);
             log.info("Approve claim thành công: claimId={}, decision={}", dto.getClaimId(), dto.getDecision());
-
             return ResponseEntity.ok(new MessageResponse("Hãng đã cập nhật quyết định!"));
 
         } catch (EntityNotFoundException e) {
             log.error("Lỗi EntityNotFound: {}", e.getMessage());
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Lỗi: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(new MessageResponse("Lỗi: " + e.getMessage()));
         } catch (IllegalStateException e) {
             log.error("Lỗi trạng thái: {}", e.getMessage());
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Lỗi: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(new MessageResponse("Lỗi: " + e.getMessage()));
         } catch (Exception e) {
             log.error("Lỗi hệ thống khi approve claim", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
