@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
@@ -74,4 +76,24 @@ public class WarrantyRepairService {
         repairRepo.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    public ResponseEntity<?> updateRepairStatus(Long id, String status, String remark) {
+        var optional = repairRepo.findById(id);
+        if (optional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Repair record not found");
+        }
+
+        WarrantyRepair repair = optional.get();
+        repair.setStatus(status != null ? status.toUpperCase() : null);
+        if (remark != null && !remark.isBlank()) {
+            repair.setDescription(
+                    (repair.getDescription() != null ? repair.getDescription() + " | " : "") + remark
+            );
+        }
+        repair.setUpdatedAt(LocalDateTime.now());
+        repairRepo.save(repair);
+        return ResponseEntity.ok(repair);
+    }
+
+
 }

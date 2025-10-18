@@ -1,5 +1,6 @@
 package com.SWP391_02.controller;
 
+import com.SWP391_02.dto.QuotationDTO;
 import com.SWP391_02.service.QuotationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,6 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class QuotationController {
 
     private final QuotationService service;
+    @Operation(summary = "Tạo mới báo giá (POST)")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_EVM_STAFF')")
+    @PostMapping
+    public ResponseEntity<?> createQuotation(@RequestBody QuotationDTO dto) {
+        return service.createQuotation(dto);
+    }
+
 
     @Operation(summary = "Lấy danh sách tất cả báo giá (GET)")
     @PreAuthorize("hasAnyAuthority('ROLE_EVM_ADMIN', 'ROLE_EVM_STAFF', 'ROLE_SC_MANAGER')")
