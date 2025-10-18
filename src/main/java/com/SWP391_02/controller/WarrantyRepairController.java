@@ -35,6 +35,15 @@ public class WarrantyRepairController {
         return service.getOne(id);
     }
 
+    @Operation(summary = "Cập nhật trạng thái sửa chữa (PUT /{id}/status)")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable Long id,
+                                          @RequestParam String status,
+                                          @RequestParam(required = false) String remark) {
+        return service.updateRepairStatus(id, status, remark);
+    }
+
     @Operation(summary = "Xóa ca sửa (DELETE)")
     @PreAuthorize("hasAuthority('ROLE_EVM_ADMIN')")
     @DeleteMapping("/{id}")

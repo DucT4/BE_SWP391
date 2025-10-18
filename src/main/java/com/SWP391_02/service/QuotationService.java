@@ -1,5 +1,6 @@
 package com.SWP391_02.service;
 
+import com.SWP391_02.dto.QuotationDTO;
 import com.SWP391_02.entity.Quotation;
 import com.SWP391_02.repository.QuotationRepository;
 import jakarta.transaction.Transactional;
@@ -65,4 +66,17 @@ public class QuotationService {
         quotationRepo.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    public ResponseEntity<?> createQuotation(QuotationDTO dto) {
+        Quotation quotation = new Quotation();
+        quotation.setRepairId(dto.getRepairId());
+        quotation.setTotalAmount(dto.getTotalAmount());
+        quotation.setNote(dto.getNote());
+        quotation.setStatus(dto.getStatus() != null ? dto.getStatus() : "PENDING_APPROVAL");
+        quotation.setCreatedAt(LocalDateTime.now());
+
+        Quotation saved = quotationRepo.save(quotation);
+        return ResponseEntity.ok(saved);
+    }
+
+
 }

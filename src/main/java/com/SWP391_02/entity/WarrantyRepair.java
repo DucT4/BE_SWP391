@@ -34,4 +34,7 @@ public class WarrantyRepair {
 
     @Column(length = 30)
     private String status; // IN_PROGRESS / COMPLETED / CANCELLED
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
 }

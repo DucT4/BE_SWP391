@@ -35,16 +35,34 @@ public class PartService {
     public Part updatePart(Long id, Part updated) {
         Part existing = partRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Part not found!"));
-        existing.setName(updated.getName());
-        existing.setCategory(updated.getCategory());
-        existing.setDescription(updated.getDescription());
-        existing.setUnitPrice(updated.getUnitPrice());
-        existing.setStockQuantity(updated.getStockQuantity());
-        existing.setUom(updated.getUom());
-        existing.setTrackLot(updated.getTrackLot());
-        existing.setTrackSerial(updated.getTrackSerial());
+
+        if (updated.getName() != null)
+            existing.setName(updated.getName());
+
+        if (updated.getCategory() != null)
+            existing.setCategory(updated.getCategory());
+
+        if (updated.getDescription() != null)
+            existing.setDescription(updated.getDescription());
+
+        if (updated.getUnitPrice() != null)
+            existing.setUnitPrice(updated.getUnitPrice());
+
+        if (updated.getStockQuantity() != null)
+            existing.setStockQuantity(updated.getStockQuantity());
+
+        if (updated.getUom() != null)
+            existing.setUom(updated.getUom());
+
+        if (updated.getTrackLot() != null)
+            existing.setTrackLot(updated.getTrackLot());
+
+        if (updated.getTrackSerial() != null)
+            existing.setTrackSerial(updated.getTrackSerial());
+
         return partRepository.save(existing);
     }
+
 
     public void deletePart(Long id) {
         partRepository.deleteById(id);
