@@ -60,8 +60,8 @@ public class SecurityConfig {
 
                         // Endpoints public (đăng nhập/đăng ký/lấy token...)
                         .requestMatchers("/api/auth/**", "/api/login").permitAll()
-
-
+  //payment
+                        .requestMatchers("/api/campaign-payments/**").permitAll()
                         // Technician API (bắt buộc có token hợp lệ)
                         .requestMatchers("/api/tech/products/**").authenticated()
 

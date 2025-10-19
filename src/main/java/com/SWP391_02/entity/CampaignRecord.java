@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "campaign_records")
@@ -37,4 +38,8 @@ public class CampaignRecord {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "campaignRecord")
+    private List<CampaignPayment> campaignPayments;
+
 }
