@@ -2,6 +2,7 @@ package com.SWP391_02.controller;
 
 import com.SWP391_02.dto.HistoryEventDTO;
 import com.SWP391_02.dto.WarrantyLookupResponse;
+import com.SWP391_02.dto.WarrantyRepairHistoryDTO;
 import com.SWP391_02.service.WarrantyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,13 +34,14 @@ public class WarrantyController {
     }
 
     @Operation(summary = "Xem lịch sử bảo hành (events) theo VIN, phân trang")
-    @PreAuthorize("hasAnyAuthority('SC_TECHNICIAN', 'SC_MANAGER', 'EVM_STAFF', 'EVM_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SC_TECHNICIAN', 'ROLE_SC_MANAGER', 'ROLE_EVM_STAFF', 'ROLE_EVM_ADMIN')")
     @GetMapping("/history")
-    public Page<HistoryEventDTO> history(
+    public Page<WarrantyRepairHistoryDTO> history(
             @RequestParam String vin,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
         return warrantyService.history(vin, PageRequest.of(page, size));
     }
+
 }

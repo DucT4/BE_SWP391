@@ -3,10 +3,11 @@ package com.SWP391_02.service;
 import com.SWP391_02.dto.CoverageDTO;
 import com.SWP391_02.dto.HistoryEventDTO;
 import com.SWP391_02.dto.WarrantyLookupResponse;
-import com.SWP391_02.entity.WarrantyEvent;
+import com.SWP391_02.dto.WarrantyRepairHistoryDTO;
+import com.SWP391_02.entity.WarrantyRepair;
 import com.SWP391_02.repository.VehicleRepository;
 import com.SWP391_02.repository.WarrantyCoverageRepository;
-import com.SWP391_02.repository.WarrantyEventRepository;
+import com.SWP391_02.repository.WarrantyRepairRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public class WarrantyService {
 
     private final VehicleRepository vehicleRepo;
     private final WarrantyCoverageRepository coverageRepo;
-    private final WarrantyEventRepository eventRepo;
+    private final WarrantyRepairRepository repairRepo; // ✅ thay vì eventRepo
 
     /**
      * Tra cứu trạng thái bảo hành tại mốc ngày asOf.
@@ -72,20 +73,20 @@ public class WarrantyService {
     }
 
     /**
-     * Lấy lịch sử sự kiện theo VIN (phân trang), sắp xếp mới nhất trước.
+     * Lấy lịch sử sửa chữa / bảo hành theo VIN (từ bảng warranty_repairs)
      */
-    public Page<HistoryEventDTO> history(String vin, Pageable pageable) {
-        return eventRepo.findByVinOrderByEventTimeDesc(vin, pageable)
-                .map(this::toHistoryDTO);
+    public Page<WarrantyRepairHistoryDTO> history(String vin, Pageable pageable) {
+        return repairRepo.findByVinContainingIgnoreCase(vin, pageable)
+                .map(this::toRepairHistoryDTO);
     }
 
-    // ===== Helpers =====
-    private HistoryEventDTO toHistoryDTO(WarrantyEvent e) {
-        return new HistoryEventDTO(
-                e.getType().name(),
-                e.getReference(),
-                e.getNote(),
-                e.getEventTime() == null ? null : e.getEventTime().toString()
-        );
+    private WarrantyRepairHistoryDTO toRepairHistoryDTO(WarrantyRepair repair) {
+        return WarrantyRepairHistoryDTO.builder()
+                .description(repair.getDescription())
+                .partsUsed(repair.getPartsUsed())
+                .status(repair.getStatus())
+                .repairDate(repair.getRepairDate() == null ? null : repair.getRepairDate().toString())
+                .build();
     }
+
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -119,5 +120,17 @@ public class ClaimService {
 
         approvalService.record(claim, evmUser, "EVM", dto.getDecision(), dto.getRemark());
         historyService.log(claim, newStatus.name(), evmUser, "EVM quyết định: " + dto.getDecision());
+    }
+    public List<ClaimResponse> getClaimsByTechnician(Long technicianId) {
+        return claimRepo.findByOpenedBy(technicianId)
+                .stream()
+                .map(claim -> new ClaimResponse(claim))
+                .toList();
+    }
+    public List<ClaimResponse> getClaimsByServiceCenter(Long serviceCenterId) {
+        return claimRepo.findByServiceCenterId(serviceCenterId)
+                .stream()
+                .map(ClaimResponse::new)
+                .toList();
     }
 }

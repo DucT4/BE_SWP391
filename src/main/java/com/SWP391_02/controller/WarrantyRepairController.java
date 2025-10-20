@@ -1,5 +1,6 @@
 package com.SWP391_02.controller;
 
+import com.SWP391_02.dto.WarrantyRepairResponse;
 import com.SWP391_02.service.WarrantyRepairService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -8,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/warranty/repairs")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class WarrantyRepairController {
-
+    private final WarrantyRepairService warrantyRepairService;
     private final WarrantyRepairService service;
 
     @Operation(summary = "Technician thực hiện bảo hành (POST)")
@@ -50,4 +53,21 @@ public class WarrantyRepairController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return service.delete(id);
     }
+    @Operation(summary = "Lấy danh sách công việc bảo hành theo Technician")
+    @PreAuthorize("hasAuthority('ROLE_SC_TECHNICIAN')")
+    @GetMapping("/technician/{technicianId}")
+    public ResponseEntity<?> getRepairsByTechnician(@PathVariable Long technicianId) {
+        return service.getRepairsByTechnician(technicianId);
+    }
+    @GetMapping("/manager/{serviceCenterId}")
+    @PreAuthorize("hasAuthority('ROLE_SC_MANAGER')")
+    public ResponseEntity<List<WarrantyRepairResponse>> getRepairsByServiceCenter(
+            @PathVariable Long serviceCenterId) {
+        List<WarrantyRepairResponse> list = warrantyRepairService.getRepairsByServiceCenter(serviceCenterId);
+        return ResponseEntity.ok(list);
+    }
+
+
+
+
 }

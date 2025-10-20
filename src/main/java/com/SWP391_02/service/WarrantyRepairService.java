@@ -1,5 +1,6 @@
 package com.SWP391_02.service;
 
+import com.SWP391_02.dto.WarrantyRepairResponse;
 import com.SWP391_02.entity.*;
 import com.SWP391_02.repository.*;
 import jakarta.transaction.Transactional;
@@ -10,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-
+import java.util.Collections;
+import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -77,6 +79,9 @@ public class WarrantyRepairService {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Cập nhật trạng thái ca sửa
+     */
     public ResponseEntity<?> updateRepairStatus(Long id, String status, String remark) {
         var optional = repairRepo.findById(id);
         if (optional.isEmpty()) {
@@ -95,5 +100,20 @@ public class WarrantyRepairService {
         return ResponseEntity.ok(repair);
     }
 
+    /**
+     * ✅ Lấy danh sách công việc của kỹ thuật viên
+     */
+    public ResponseEntity<?> getRepairsByTechnician(Long technicianId) {
+        List<WarrantyRepair> repairs = repairRepo.findByTechnicianId(technicianId);
+        return ResponseEntity.ok(repairs);
+    }
+    public List<WarrantyRepairResponse> getRepairsByServiceCenter(Long serviceCenterId) {
+        return repairRepo.findByServiceCenterId(serviceCenterId)
+                .stream()
+                .map(WarrantyRepairResponse::new)
+                .toList();
+    }
+
 
 }
+
