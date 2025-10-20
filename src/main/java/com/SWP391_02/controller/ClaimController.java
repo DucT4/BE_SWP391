@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/claims")
 @RequiredArgsConstructor
@@ -136,4 +138,29 @@ public class ClaimController {
                     .body(new MessageResponse("Lỗi hệ thống: " + e.getMessage()));
         }
     }
+        /**
+         * SC_TECHNICIAN - Xem danh sách claim đã tạo
+         */
+        @Operation(summary = "Lấy danh sách claim theo kỹ thuật viên (SC_TECHNICIAN)")
+        @PreAuthorize("hasAuthority('ROLE_SC_TECHNICIAN')")
+        @GetMapping("/technician/{techId}")
+        public ResponseEntity<?> getClaimsByTechnician(@PathVariable Long techId) {
+            try {
+                var claims = claimService.getClaimsByTechnician(techId);
+                return ResponseEntity.ok(claims);
+            } catch (Exception e) {
+                log.error("Lỗi khi lấy danh sách claim cho technicianId={}", techId, e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new MessageResponse("Không thể tải danh sách claim: " + e.getMessage()));
+            }
+        }
+    @GetMapping("/manager/{serviceCenterId}")
+    @PreAuthorize("hasAuthority('ROLE_SC_MANAGER')")
+    public ResponseEntity<List<ClaimResponse>> getClaimsByServiceCenter(@PathVariable Long serviceCenterId) {
+        List<ClaimResponse> claims = claimService.getClaimsByServiceCenter(serviceCenterId);
+        return ResponseEntity.ok(claims);
+    }
+
+
 }
+
